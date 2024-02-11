@@ -192,4 +192,4 @@ As you notice, now we have plenty of functions to analyze, and assuming by it's 
 
 ![](/images/unpacking-emotet/unpacking-emotet-encstr.png)
 
-And that's it for today, hope you liked and learned something from this article. Thank you!!
+And that's it for today, hope you liked and learned something from this article. Thank you!!!
