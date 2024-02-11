@@ -24,7 +24,7 @@ md5: ca06acd3e1cab1691a7670a5f23baef4
 
 First, we need to know if the sample is definitely packed. Lets open it on DiE.
 
-![DiE](/images/unpacking-emotet-die.jpg "detect it easy")
+<img title="DiE" alt="detect it easy" src="/images/unpacking-emotet-die.jpg">
 
 We can see that it is a 32-bit binary, made in C/C++ and having a certificate stored in the overlay section (WinAuth(2.0))
 
@@ -47,12 +47,12 @@ But, we can have the proof of it by looking into common packing APIs:
 - CreateProcessInternalW()
 - VirtualAlloc()
 - VirtualAllocEx()
-- VirtualProtect() | ZwProtectVirtualMemory()
-- WriteProcessMemory() | NtWriteProcessMemory()
-- ResumeThread() | NtResumeThread()
-- CryptDecrypt() | RtlDecompressBuffer()
-- NtCreateSection() + MapViewOfSection() | ZwMapViewOfSection()
-- UnmapViewOfSection() | ZwUnmapViewOfSection()
+- VirtualProtect() / ZwProtectVirtualMemory()
+- WriteProcessMemory() / NtWriteProcessMemory()
+- ResumeThread() / NtResumeThread()
+- CryptDecrypt() / RtlDecompressBuffer()
+- NtCreateSection() + MapViewOfSection() / ZwMapViewOfSection()
+- UnmapViewOfSection() / ZwUnmapViewOfSection()
 - NtWriteVirtualMemory()
 - NtReadVirtualMemor
 
