@@ -32,7 +32,7 @@ We can see that it is a 32-bit binary, made in C/C++ and having a certificate st
 
 Looking at the entropy, we see that the binary has 89% chance of being packed.
 
-![entropy](/images/unpacking-emotet/unpacking-emotet-entropy.jpg "entropy")
+![](/images/unpacking-emotet/unpacking-emotet-entropy.jpg)
 
 We can confirm it by looking at the sample on IDA.
 
