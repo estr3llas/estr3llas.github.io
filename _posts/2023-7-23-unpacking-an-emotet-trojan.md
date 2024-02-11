@@ -24,17 +24,17 @@ md5: ca06acd3e1cab1691a7670a5f23baef4
 
 First, we need to know if the sample is definitely packed. Lets open it on DiE.
 
-![](./images/unpacking-emotet/unpacking-emotet-die.jpg)
+![](./images/unpacking-emotet/unpacking-emotet-die.png)
 
 We can see that it is a 32-bit binary, made in C/C++ and having a certificate stored in the overlay section (WinAuth(2.0))
 
 Looking at the entropy, we see that the binary has 89% chance of being packed.
 
-![](/images/unpacking-emotet/unpacking-emotet-entropy.jpg)
+![](/images/unpacking-emotet/unpacking-emotet-entropy.png)
 
 We can confirm it by looking at the sample on IDA.
 
-![idaconfirm](/images/unpacking-emotet/unpacking-emotet-idaconfirm.jpg "idaconfirm")
+![](/images/unpacking-emotet/unpacking-emotet-idaconfirm.png)
 
 IDA shows some indicators of packing, like:
 
@@ -58,7 +58,7 @@ But, we can have the proof of it by looking into common packing APIs:
 
 Searching for VirtualAlloc(), we will soon find the subroutine that probably is the responsible for unpacking the malware.
 
-![valloc](/images/unpacking-emotet/unpacking-emotet-valloc.jpg "valloc")
+![](/images/unpacking-emotet/unpacking-emotet-valloc.png)
 
 Now it gets a little bit more complicated. The red box marks an "abnormal epilogue". An "abnormal epilogue" occurs when we have some pushes into the stack and not a single pop before it returns.
 
@@ -66,12 +66,25 @@ Now it gets a little bit more complicated. The red box marks an "abnormal epilog
 
 After calling ecx (VirtualAlloc), the return will execute the second push from the stack (osffset loc_417d9a), executing whatever is present on the second block, and then the real return will come.
 
-![sub_41d50](/images/unpacking-emotet/unpacking-emotet-sub_41d50.jpg "sub_41d50")
+![](/images/unpacking-emotet/unpacking-emotet-sub_41d50.png)
 
 Normally, after the code finishes the unpack, we will have a indirect call to it.
 
-![jmpecx](/images/unpacking-emotet/unpacking-emotet-jmpecx.jpg "jmpecx")
+![](/images/unpacking-emotet/unpacking-emotet-jmpecx.png)
 
 We can confirm it by looking at the end of the main function, which has an "jmp ecx".
 
 Again, take notes of the address. 0x00417F1F.
+
+# Unpacking
+
+So we got two addresses to set breakpoints in:
+
+```
+0x00417E3F
+0x00417F1F
+```
+
+We can open it on x64dbg, search for those addresses (Ctrl+G), and then set the breakpoints.
+
+![jmpex](/images/unpacking-emotet/unpacking-emotet-breakpoints.png)
