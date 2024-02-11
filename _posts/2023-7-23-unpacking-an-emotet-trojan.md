@@ -15,7 +15,7 @@ Emotet uses some tricks to evade and prevent his detection and analysis. The mal
 
 Today we will be covering the unpacking of a sample from emotet family.
 
-### Reconnaissance
+## Reconnaissance
 
 ```
 sha256: 3a9494f66babc7deb43f65f9f28c44bd9bd4b3237031d80314ae7eb3526a4d8f
