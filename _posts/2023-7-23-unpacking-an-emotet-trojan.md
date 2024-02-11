@@ -5,7 +5,7 @@ categories: [Unpacking,Malware,RE,Emotet]
 excerpt: Emotet, in general, is a banking trojan. Identified in-the-wild for the first time in 2014 as a stealth info stealer (mainly targeting banking informations), emotet has evolved to a sofisticated trojan over the years; Now having funcionalities that goes from simply keylogging to self-spreading (as worms do).
 ---
 
-![Alt text](/images/unpacking-emotet-header.jpg "a title")
+![header image](/images/unpacking-emotet/unpacking-emotet-header.jpg "just a header")
 
 Emotet, in general, is a banking trojan. Identified in-the-wild for the first time in 2014 as a stealth info stealer (mainly targeting banking informations), emotet has evolved to a sofisticated trojan over the years; Now having funcionalities that goes from simply keylogging to self-spreading (as worms do).
 
