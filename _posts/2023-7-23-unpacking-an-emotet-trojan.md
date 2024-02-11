@@ -24,7 +24,9 @@ md5: ca06acd3e1cab1691a7670a5f23baef4
 
 First, we need to know if the sample is definitely packed. Lets open it on DiE.
 
+
 <img title="DiE" alt="detect it easy" src="/images/unpacking-emotet-die.jpg">
+
 
 We can see that it is a 32-bit binary, made in C/C++ and having a certificate stored in the overlay section (WinAuth(2.0))
 
