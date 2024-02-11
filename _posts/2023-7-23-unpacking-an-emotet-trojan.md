@@ -23,3 +23,55 @@ md5: ca06acd3e1cab1691a7670a5f23baef4
 ```
 
 First, we need to know if the sample is definitely packed. Lets open it on DiE.
+
+![DiE](/images/unpacking-emotet/unpacking-emotet-die.jpg "detect it easy")
+
+We can see that it is a 32-bit binary, made in C/C++ and having a certificate stored in the overlay section (WinAuth(2.0))
+
+Looking at the entropy, we see that the binary has 89% chance of being packed.
+
+![entropy](/images/unpacking-emotet/unpacking-emotet-entropy.jpg "entropy")
+
+We can confirm it by looking at the sample on IDA.
+
+![idaconfirm](/images/unpacking-emotet/unpacking-emotet-idaconfirm.jpg "idaconfirm")
+
+IDA shows some indicators of packing, like:
+
+- Lack of subroutines on a malware this sofisticated.
+- Lack of internet-related APIs
+- Main (start) function seems small and doesn't have any WindowsAPI or indirect calls.
+
+But, we can have the proof of it by looking into common packing APIs:
+
+- CreateProcessInternalW()
+- VirtualAlloc()
+- VirtualAllocEx()
+- VirtualProtect() | ZwProtectVirtualMemory()
+- WriteProcessMemory() | NtWriteProcessMemory()
+- ResumeThread() | NtResumeThread()
+- CryptDecrypt() | RtlDecompressBuffer()
+- NtCreateSection() + MapViewOfSection() | ZwMapViewOfSection()
+- UnmapViewOfSection() | ZwUnmapViewOfSection()
+- NtWriteVirtualMemory()
+- NtReadVirtualMemor
+
+Searching for VirtualAlloc(), we will soon find the subroutine that probably is the responsible for unpacking the malware.
+
+![valloc](/images/unpacking-emotet/unpacking-emotet-valloc.jpg "valloc")
+
+Now it gets a little bit more complicated. The red box marks an "abnormal epilogue". An "abnormal epilogue" occurs when we have some pushes into the stack and not a single pop before it returns.
+
+> You can notice that ds:VirtualAlloc is being moved into ecx, then ecx is pushed onto the stack and the return is called, meaning the call of VirtualAlloc().
+
+After calling ecx (VirtualAlloc), the return will execute the second push from the stack (osffset loc_417d9a), executing whatever is present on the second block, and then the real return will come.
+
+![sub_41d50](/images/unpacking-emotet/unpacking-emotet-sub_41d50.jpg "sub_41d50")
+
+Normally, after the code finishes the unpack, we will have a indirect call to it.
+
+![jmpecx](/images/unpacking-emotet/unpacking-emotet-jmpecx.jpg "jmpecx")
+
+We can confirm it by looking at the end of the main function, which has an "jmp ecx".
+
+Again, take notes of the address. 0x00417F1F.
