@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Asymmetric cryptography - A mathematical introduction.
+title:  "Asymmetric cryptography: A mathematical introduction."
 categories: [Cryptography,Math]
 excerpt: Asymmetric cryptography, or Public-key cryptography, is the type of cryptography which, instead of symmetric cryptography, utilizes pairs of keys. Each pair is made up by a Public Key and a Private Key. As their names says, the Public Key can be exposed to anyone in the world, but the Private Key must be kept in secret, only you should know what is its values.
 ---
@@ -13,7 +13,7 @@ In that cryptographic system, anyone with a PK can encrypt a message with their 
 
 This type of system is highly used in digital signature systems, where a message is encrypted using the person's SK, forming a 256-bit signature. So, to validate that a message X was sent by the person acclaiming it, we can use a type of "validation function", which takes X, the 256-bit signature and the PK, returning True or False. The key point here is that, given the number of possibilities of a 256-bit signature and the commutative property of key pairs in asymmetric encryption, we can be extremely confident that the only way of someone could have produced that signature from the given message, is if they know the SK paired with that PK.
 
-> To provide you with a sense of the scale associated with 256-bits, there is this awesome video from 3Blue1Brown: https://www.youtube.com/watch?v=S9JGmA5_unY
+> To provide you with a sense of the scale associated with 256-bits, there is this awesome video from 3Blue1Brown: <https://www.youtube.com/watch?v=S9JGmA5_unY>
 
 The key space (number of possible keys in a particular cipher) of asymmetric cryptography is much lower than symmetric. Each user communicating with each other in a net will have a PK and a SK, hence they will use other uses PK to encrypt a message to that person. That fact leads us to a key space of 2n, where for 1000 users, there will be 2000 keys.
 
@@ -49,7 +49,7 @@ A prime number is a number which does not have any divisor other than 1 and itse
 
 > Note that the number 1 is not considered as a prime number. If it was, it'll go against the theorem of unique factorization, which states that a composite number only has one integer factorization. 
 
-You can check out a list of prime numbers at: https://en.wikipedia.org/wiki/List_of_prime_numbers
+You can check out a list of prime numbers at: <https://en.wikipedia.org/wiki/List_of_prime_numbers>
 
 Those numbers are essential to cryptographic systems. A common function used in cryptography is the multiplication of two large prime numbers. The product of that multiplication is called a semiprime. Applying the integer factorization problem, it is almost impossible to guess what are the two large prime numbers that resulted in an even larger semiprime number.
 
@@ -74,7 +74,7 @@ We can also use the modulo operation as way to find if a number A is a divisor o
 
 Is 3 a divisor of 108?
 
-108 mod 3 = 0, so, 3 is indeed a divisor of 108.
+108 mod 3 = 0, hence 3 is indeed a divisor of 108.
 
 But how do we test the primality of a number? I invoke Fermat and Euler!
 
@@ -139,7 +139,7 @@ Given N, calculate T, which is Φ(N). T can be simplified as:
 
 - Φ(N) = Φ(p*q) = Φ(p)Φ(q) = (p-1)(q-1)
 
-> Remember that P and Q are prime numbers, so the number of coprimes of P and Q will always be P-1 and Q-1.
+> Remember that P and Q are prime numbers, so the number of coprimes to P and Q will always be P-1 and Q-1.
 
 For security reasons, discard P & Q.
 
