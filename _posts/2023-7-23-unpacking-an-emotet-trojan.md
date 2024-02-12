@@ -119,7 +119,7 @@ But, the last one is important. Since the code inside of it is different, is wor
 
 We can assume that edx is a call to VirtualAlloc, because some of the parameters passed to it are common parameters passed to VirtualAlloc itself.
 
-> push 40 as: PAGE_EXECUTE_READWRITE (flProtect) && push 3000 as: MEM_COMMIT | MEM_RESERVE
+> push 40 as: PAGE_EXECUTE_READWRITE (flProtect) && push 3000 as: MEM_COMMIT / MEM_RESERVE
 
 To confirm it, we stepover to that call.
 
