@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Asymmetric cryptography: A mathematical introduction."
+title: Asymmetric cryptography - A mathematical introduction.
 categories: [Cryptography,Math]
 ---
 
