@@ -71,16 +71,16 @@ These are done by placing breakpoint on memory-related APIs. Examining their par
 The APIs are usually:
 
 - CreateProcessInternalW( )  
-- VirtualAlloc( )  
-- VirtualAllocEx( )  
-- VirtualProtect( ) | ZwProtectVirtualMemory( )  
-- WriteProcessMemory( ) | NtWriteProcessMemory( )  
-- ResumeThread( ) | NtResumeThread( )  
-- CryptDecrypt( ) | RtlDecompressBuffer( )  
-- NtCreateSection( ) + MapViewOfSection( ) | ZwMapViewOfSection( )  
-- UnmapViewOfSection( ) | ZwUnmapViewOfSection( )  
-- NtWriteVirtualMemory( )  
-- NtReadVirtualMemory( )
+- VirtualAlloc()  
+- VirtualAllocEx()  
+- VirtualProtect() / ZwProtectVirtualMemory()  
+- WriteProcessMemory() / NtWriteProcessMemory()  
+- ResumeThread() / NtResumeThread()  
+- CryptDecrypt() / RtlDecompressBuffer()  
+- NtCreateSection() + MapViewOfSection() / ZwMapViewOfSection()  
+- UnmapViewOfSection() / ZwUnmapViewOfSection()  
+- NtWriteVirtualMemory()  
+- NtReadVirtualMemory()
 - CreateProcessInternalW
 
 My main targets here is VirtualAlloc, VirtualProtect, CreateProcessInternalW and ResumeThread. On VirtualAlloc, we put a breakpoint on its exit point, more precisely on the "ret 10" instruction, then following eax on dump. On VirtualProtect, we check what address is into ecx, following it on memory dump. On the latter ones, we follow the address where its marked to start the new process/thread, and dump it.
