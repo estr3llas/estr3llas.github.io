@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Unveiling custom packers: a comprehensive guide"
+title:  "Unveiling custom packers: A comprehensive guide"
 categories: [Unpacking,Malware,RE,Dridex,Simda]
 excerpt: In this article, you'll be diving into an introduction to how packers work, some tips to unpack, and two walkthroughs showing off how i usually deal with custom packers.
 ---
