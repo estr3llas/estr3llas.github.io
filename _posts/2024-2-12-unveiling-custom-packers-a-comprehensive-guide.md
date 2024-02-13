@@ -23,7 +23,7 @@ Internally in the stub, there are 3 main forms of storing the encrypted payload:
 
 > A way to identify the section which contains the packed file is looking for its size. If the raw size is small or set to zero, and the virtual size is large enough to store a PE or shellcode, it may likely be our target.
 
-In a Crypter, the packer's stub procedure is responsible of decrypting the payload, then running it in one of two regions: inside their own process, or in a remote process.
+In a Crypter, the packer's stub procedure is responsible for decrypting the payload, then running it in one of two regions: inside their own process, or in a remote process.
 
 Running inside their own process is done, in simple terms, by allocating memory, writing data to the allocated memory, adjusting its protection and setting the EIP register to point to that specific location. Also, some custom packers will replace their on .text section with the packed payload.
 
