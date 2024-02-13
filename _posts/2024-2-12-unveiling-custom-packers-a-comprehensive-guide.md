@@ -13,7 +13,7 @@ In this article, you'll be diving into an introduction to how packers work, some
 
 Packers generally have three types: Compressors, Crypters and Protectors. A Compressor, as its name says, compress the size of the desired file, or in other words, it squeezes a file into their own unpacker process. A Crypter encrypts the payload, executes it in memory at runtime (with an option to drop the final payload on disk), and aims to evade detection from AV/EDR software, without the need of compressing the file. Protector perform both packing and encryption of their payload. Additionally, they employ various anti-debugging and anti-reversing techniques to make the entire unpacking process challenging for reverse engineers.
 
-The main part of a packer is its stub, which is responsible for the unpacking routine. So, when you input a file to a packer, it basically generates a stub with your payload inside it.
+The main part of a packer is its stub, which is responsible for the unpacking routine. So, when a file is inputed, it basically generates a stub with the payload inside it.
 
 Internally in the stub, there are 3 main forms of storing the encrypted payload:
 
@@ -96,7 +96,7 @@ This method is quite straight-forward: halt the debugger for every loaded DLL, e
 
 ## Automated unpacking
 
-This approach consists by using some tool to extract the packed payload for you. it is a core decision when dealing with deadlines.
+This approach consists by using some tool to extract the packed payload. it is a core decision when dealing with deadlines.
 
 Some of them are:
 
@@ -158,15 +158,15 @@ After reaching the entrypoint breakpoint, start placing our API breakpoints. Go 
 
 After it, place breakpoints on: VirtualProtect, CreateProcessInternalW, CreateThread, ResumeThread, IsDebuggerPresent and FindWindowA (bp [API_name]).
 
-Resume its execution (F9) and you will hit VirtualAlloc, follow EAX on dump 1. After it, VirtualProtect will be hit several times (21 times!)
+Resume its execution (F9) and VirtualAlloc will be hit, follow EAX on dump 1. After it, VirtualProtect will be hit several times (21 times!)
 
 > However, as the reader might have noticed, most of the VirtualProtect calls are targeting the address range of ~0x0400000, which can possibly be a .text replacement
 
-None of them is relevant for us in this approach, just look at dump 1 after the first call to VirtualProtect and you will see our unpacked PE.
+None of them is relevant for us in this approach, just look at dump 1 after the first call to VirtualProtect and the reader will see our unpacked PE.
 
 > But remember, do not assume the first extraction is the final payload, packers can have several stages.
 
-To confirm it is the final payload, open it on DiE and you will see plenty indicators:
+To confirm it is the final payload, open it on DiE, there are plenty of indicators:
 
 - Encrypted strings
 - anti-analysis-related strings
@@ -178,7 +178,7 @@ And obviously, open it on your favorite disassembler to assure yourself.
 
 ![](/images/unveiling-custom-packers/simda-naivebinja.png)
 
-You may have noticed that we do not understood nothing of what was going on the unpacking phase. That's why even though this approach is quicker, when it fails, you need to have a backup, which is deep diving into the packer's code!
+The reader may have noticed that we do not understood nothing of what was going on the unpacking phase. That's why even though this approach is quicker, when it fails, you need to have a backup, which is deep diving into the packer's code!
 
 ## Savvy approach
 
@@ -217,7 +217,7 @@ Ending up with 3238 functions who are never called.
 
 Now, we can start our reverse engineering.
 
-At program's entrypoint, scroll all the way down to the function's end addresses, you will see a common obfuscation technique, which pushes an address to the stack, and immediately returns, leading EIP to be set at that address.
+At program's entrypoint, scroll all the way down to the function's end addresses, the reader will see a common obfuscation technique, which pushes an address to the stack, and immediately returns, leading EIP to be set at that address.
 
 ![](/images/unveiling-custom-packers/simda-pushret1.png)
 
@@ -225,7 +225,7 @@ Following sub_40139a, we will again encounter that type of obfuscation, which ev
 
 ![](/images/unveiling-custom-packers/simda-pushret2.png)
 
-This sub does not do anything relevant to us. There are many calls to sub_401100, which is junk code. On the function's epilogue, you will notice that eax register is being pushed onto the stack, then, the function returns, following the same technique we saw before.
+This sub does not do anything relevant to us. There are many calls to sub_401100, which is junk code. On the function's epilogue, the reader will notice that eax register is being pushed onto the stack, then, the function returns. This follows the same technique we saw before.
 
 ![](/images/unveiling-custom-packers/simda-pushret3.png)
 
@@ -241,9 +241,9 @@ How do we discover what is loaded at this location? Simple, we put a breakpoint 
 
 Yet, hold on, before getting our hands into a debugger, lets wrap up what's happening until now.
 
-Come back to the binary's entrypoint, you will notice that the function which loads the content from data_4ca094 inside ecx (sub_401130) is called plenty of times. Knowing that, we can assume that each block of code tries to setup data_4ca094, then, if it is succesfully set up, sub_401130 is called.
+Come back to the binary's entrypoint. The reader will notice that the function which loads the content from data_4ca094 inside ecx (sub_401130) is called plenty of times. Knowing that, we can assume that each block of code tries to setup data_4ca094, then, if it is succesfully set up, sub_401130 is called.
 
-> If you look closely, you can see a call to LoadCursorA, which is loads or retrieves a handle to a cursor. The point is, a cursor can also be a bitmap, so the payload is possibly stored on a bitmap format.
+> If the reader looks closely, a call to LoadCursorA is made, which loads or retrieves a handle to a cursor. The point is, a cursor can also be a bitmap, so the payload is possibly stored on a bitmap format.
 
 Open the binary in x64dbg and put a breakpoint in push ecx (00401164):
 
@@ -281,7 +281,7 @@ Remember, on the disassembler we are dealing with raw offsets, so we need to con
 
 Run (F9), and we can see that the address 0042037 is loaded into edx. The address 0042037 is on the binary's .text section, this can lead us to believe that it is being replaced in runtime (as we were suspicious before). 
 
-In that particular case, you need to dump the whole binary from memory again, but soon we'll see that it does not apply to every .text replacement, sometimes, it is just a shellcode, so you need to dump only the address range of the .text itself.
+In that particular case, dump the whole binary from memory again. Although, we'll see that it does not apply to every .text replacement, sometimes it is just a shellcode, so the reader need to dump only the address range of the .text itself.
 
 Also, i had a better result dumping it from Process Hacker instead of x64dbg. The process is simple:
 
@@ -322,7 +322,7 @@ And due to the author's sanity, we will be doing the navvy approach only.
 
 ## Navvy approach
 
-I won't be delaying any more practical time, at this point you should have all the necessary knowledge to follow along.
+I won't be delaying any more practical time, at this point the reader should have all the necessary knowledge to follow along.
 
 As we open the PE on Binary Ninja, we soon notice the same obfuscation technique used by the previous sample:
 
@@ -333,18 +333,18 @@ Following eax (sub_40c2e0), we can see that it does significant stuff. It loads 
 - sub_40b870 - walks kernel32.dll and stores it onto a Atom
 - sub_40b4c0 - manipulates the previous atom
 
-In its epilogue, it makes a call t-o data_411bf4, which is populated at runtime. If you check the code references to that data location, you will encounter the eax register being moved into it. Place a breakpoint on that instruction.
+In its epilogue, it makes a call to data_411bf4, which is populated at runtime. If the reader check the code references to that data location, it will encounter the eax register being moved into it. Place a breakpoint on that instruction.
 
 ![](/images/unveiling-custom-packers/dridex-xrefs.png)
 
-Hitting that address, step over and then follow that location on memory dump. You will soon notice, by its bytes, that it is code-related.
+Hitting that address, step over and then follow that location on memory dump. The reader will soon notice, by its bytes, that it is code-related.
 
 ![](/images/unveiling-custom-packers/dridex-dump1.png)
 
 - Sequence of 5x... - pushes or pops
 - C7[84/44]24 - mov value to stack
 
-To confirm it, place a breakpoint on the call to data_411bf4. You will see that what's being called is the same content as we've saw before.
+To confirm it, place a breakpoint on the call to data_411bf4. The reader will see that what's being called is the same content as we've saw before.
 
 Another interesting point is the ud2 instruction.
 
@@ -356,25 +356,25 @@ Following the call, we will get into the address 0x0040afe0, which exists in our
 
 ![](/images/unveiling-custom-packers/dridex-graph1.png)
 
-Now it gets trickier, if you go straight to the end of this subroutine, you won't encounter any control-flow deviation or any clue that leads us to the next stage of the unpacking procedure.
+Now it gets trickier, if the reader go straight to the end of this subroutine, it won't encounter any indirect call or any clue that leads us to the next stage of the unpacking procedure.
 
 > I encourage the reader to look deep into this function and finding the next stage by its own before continuing.
 
 This subroutine makes only 3 calls, which 2 of them are useless to us. So, the only option is the call to sub_409820. 
 
-Following sub_409820, we can see a complex subroutine that make a lot of calls. On this situation, don't get away from your focus, trying to understand what each subroutine does will only take you to a infinite rabbit hole. My strategy here was searching for indirect calls on those subroutines. I've came up with two interesting ones:
+Following sub_409820, we can see a complex subroutine that make a lot of calls. On this situation, don't get away from your focus, trying to understand what each subroutine does will only takes to a infinite rabbit hole. My strategy here was searching for indirect calls on those subroutines. I've came up with two interesting ones:
 
 > Again, try it yourself before continuing.
 
 At 0x004099d1 there is a call to a stack variable. If we put a breakpoint there, we will soon see a call to VirtualAlloc. Step over and follow eax on dump 1. After that call, it makes a call to sub_406e40, which, at 00406f97, makes another call to eax. Placing a breakpoint on that address will reveal us another call to VirtualAlloc. Again, step over and follow eax on dump 2.
 
-> This is a very manual process, you will need to deep dive on those routines and really pay attention to get anything valuable from them.
+> This is a very manual process, the reader will need to deep dive on those routines and really pay attention to get anything valuable from them.
 
 Finally, at 00409d90, there is a call to another stack value. Placing a breakpoint on it and stepping into will reveal a PE file on dump 2. Dump it, but soon you will notice that it isn't our unpacked binary. That call (at 00409d90) is made to the previous allocated memory (dump 1). Knowing that, dump the content from dump 1 and open in your disassembler.
 
 As it starts the execution at the base address which was allocated (00520000 in my case), we can assume that sub_0 in the disassembler is our entrypoint.
 
-This shellcode is huge. There are plenty of indirect calls, you can find it yourself as an exercise.
+This shellcode is huge. There are plenty of indirect calls which the reader can find them by itself as an exercise.
 
 ![](/images/unveiling-custom-packers/dridex-graph2.png)
 
@@ -386,7 +386,7 @@ As the reader must have noticed, it is the address of our original .text, meanin
 
 Dump the .text segment from memory, open it on your disassembler, and you successfully unpacked the binary!
 
-> In this particular case, dumping only the .text from memory was better than dumping the whole PE. It may vary for you.
+> In this particular case, dumping only the .text from memory was better than dumping the whole PE. It may vary for the reader.
 
 To get to the shellcode's entrypoint, remember that it is set by its caller, so the offset a40 is our entrypoint:
 
