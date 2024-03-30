@@ -56,7 +56,7 @@ To confirm it, the reader may have noticed a big chunk of apparently the same en
 
 > Notice the pattern being repeated in this chunk, it is likely caused by XOR encryption.
 
-## Packer Analysis
+## Dropper Analysis
 
 As said before, the file is a 32-bit .NET executable.  Open it on dnSpy 32-bit and you'll soon see that the file is not obfuscated, making our analysis easier to accomplish. Before continuing to main, the reader needs to pay attention on a extremely important thing when analyzing .NET binaries, the class constructors.
 
