@@ -140,7 +140,7 @@ If `runType` is "Run Always", this function starts the decrypted binary and retu
 
 Returning means that, at the end of execution, the `flag` variable will be assigned to `enableFakeError`. This assignment employs the following screen, which tries to confuses both the victim and the analyst.
 
-![](/images/glupteba/fakerror.png)
+![](/images/glupteba/fakeerror.png)
 
 ## Extracting the payload
 
