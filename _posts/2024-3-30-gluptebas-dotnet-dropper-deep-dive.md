@@ -60,13 +60,13 @@ To confirm it, the reader may have noticed a big chunk of apparently the same en
 
 As said before, the file is a 32-bit .NET executable.  Open it on dnSpy 32-bit and you'll soon see that the file is not obfuscated, making our analysis easier to accomplish. Before continuing to main, the reader needs to pay attention on a extremely important thing when analyzing .NET binaries, the class constructors.
 
-Whenever a class or a struct is instantiated, it's constructor is invoked. The point here is that these constructors runs before the execution of the main method, class initializers and even the executable's entrypoint. Aware of that, there reader should always examine the `ctor()` / `cctor()` before the main method. 
+Whenever a class or a struct is instantiated, it's constructor is invoked. The point here is that these constructors runs before the execution of the main method, class initializers and even the executable's entrypoint. Aware of that, the reader should always examine the `ctor()` / `cctor()` before the main method. 
 
 And that's what happens in our binary, following the `Main` entrypoint of the program, we get to the `Program` class, which the reader will see it contains almost all the dropper's procedure, but if looked closer, there is a `cctor()`, which initializer a bunch of lists, paths and variables.
 
 ![](/images/glupteba/cctor.png)
 
-Analyzing this constructor, we can see that it sets various flags to false, the field `encryptType` to "XORIAIZCNIWw", `cvers` to "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" (when decoded from base 64) and four lists: the first being for the `fileNames`, the second fot `fileTypes`, third for `fileRunTypes` and the last one for `fileDropPaths` (ledaing us to believe that the dropped payload will be at the %TEMP% directory).
+Analyzing this constructor, we can see that it sets various flags to false, the field `encryptType` to "XORIAIZCNIWw", `cvers` to "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" (when decoded from base 64) and four lists: the first being for the `fileNames`, the second foe `fileTypes`, third for `fileRunTypes` and the last one for `fileDropPaths` (ledaing us to believe that the dropped payload will be at the %TEMP% directory).
 
 ![](/images/glupteba/cctor_init.png)
 
